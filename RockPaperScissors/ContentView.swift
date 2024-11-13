@@ -7,10 +7,18 @@
 
 import SwiftUI
 
+extension Color {
+    static let customSecondaryColor = Color(red: 0.71, green: 0.80, blue: 0.75)
+    static let customPrimaryColor = Color(red: 0.996, green: 0.949, blue: 0.91)
+    static let customAccentColor = Color(red: 0.992, green: 0.871, blue: 0.839)
+    static let customAccentColor2 = Color(red: 0.945, green: 0.741, blue: 0.678)
+}
+
 struct ContentView: View {
     
-    @State private var moveList = ["Rock", "Paper", "Scissors"]
+    private let moveList = ["Rock", "Paper", "Scissors"]
     @State private var gameMoveIndex = Int.random(in: 0...2)
+    private let moveListEmojiAttach = ["Rock" : "🪨", "Paper" : "📄", "Scissors" : "✂️"]
     
     
     // Game tracking
@@ -31,18 +39,57 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                
+                Rectangle()
+                    .fill(Color.customSecondaryColor.gradient)
+                    .ignoresSafeArea()
+//                Color.customSecondaryColor.gradient
+//                    .ignoresSafeArea()
+                
                 VStack(spacing: 40) {
+                    
+                    Spacer()
+                    
+                    Text("Rock Paper Scissors")
+                        .foregroundStyle(Color.customPrimaryColor)
+                        .font(.largeTitle.weight(.heavy))
+                        .shadow(radius: 5)
+                    
+                    Spacer()
+                    
                     Text("Round \(currentRound) out of \(maxNumberOfRounds)")
+                        .font(.callout)
+                        .foregroundStyle(Color.customPrimaryColor)
                     
                     VStack {
-                        Text("Game chose: \(moveList[gameMoveIndex])")
-                        Text("Pick ___ to " + (gameWin ? "win" : "lose"))
+                        Text("Game chose: \(moveListEmojiAttach[moveList[gameMoveIndex]] ?? moveList[gameMoveIndex])")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color.customPrimaryColor)
                     }
+
                     
-                    HStack(spacing: 30) {
+                    VStack {
+                        Text("Pick to " + (gameWin ? "win" : "lose")) //todo: left off here, want to change it so the word 'lose' or 'win' is in a different color like customAccentColor2t.
+                        
                         ForEach(moveList, id: \.self) { move in
-                            Button("\(move)") {
+//                            Button("\(move)") {
+//                                selectionCheck(move)
+//                            }
+                            Button {
                                 selectionCheck(move)
+                            } label: {
+                                //Text("\(move)")
+                                if let emoji = moveListEmojiAttach[move] {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color.customAccentColor)
+                                            .padding()
+                                            
+                                        Text(emoji)
+                                    }
+                                } else {
+                                    Text("\(move)")
+                                }
                             }
                         }
                     }
@@ -67,11 +114,13 @@ struct ContentView: View {
                         Text("Final Score: \(userScore) out of \(maxNumberOfRounds)")
                     }
 
-
+                    Spacer()
+                    
+                    Text("Score: \(userScore)")
+                        .font(.headline)
                 }
                 
             }
-            .navigationTitle("Rock Paper Scissors!")
         }
     }
         
